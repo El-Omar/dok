@@ -34,7 +34,7 @@
         Voor meer info hierover raadpleeg je best de programma.
       </p>
       <strong class="what-text-button">
-        <a href="?page=schedule">Programma</a>
+        <a href="?page=schedule&amp;month=5">Programma</a>
       </strong>
     </div>
   </article>
@@ -65,7 +65,8 @@
         <a href="#">Word een bewoner</a>
       </strong>
     </div>
-    <img src="assets/img/site/bewoners.png" alt="Bewoners" width="720" height="607" />
+    <img src="assets/img/site/bewoners.png" alt="Bewoners"
+      width="720" height="607" srcset="assets/img/site/default.gif 800w" />
   </article>
 
   <article class="creative">
@@ -73,8 +74,7 @@
       <h3 class="creative-title">Iedereen is creatief!</h3>
     </header>
     <strong class="creative-text">
-      Sommigen hebben gewoon <br />
-      een duwtje nodig!
+      Sommigen hebben gewoon een duwtje nodig!
     </strong>
   </article>
 </section>

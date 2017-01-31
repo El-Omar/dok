@@ -20,89 +20,6 @@ class EventsController extends Controller {
     }
 
     $this->setEvents($upcomingEvents);
-
-    // $conditions = array();
-
-    //example: search on title
-    // $conditions[0] = array(
-    //   'field' => 'title',
-    //   'comparator' => 'like',
-    //   'value' => 'schoen'
-    // );
-
-    //example: search on location_id
-    // $conditions[0] = array(
-    //   'field' => 'location_id',
-    //   'comparator' => '=',
-    //   'value' => 4
-    // );
-
-    //example: search on location name
-    // $conditions[0] = array(
-    //   'field' => 'location',
-    //   'comparator' => 'like',
-    //   'value' => 'strand'
-    // );
-
-    //example: search on organiser id
-    // $conditions[0] = array(
-    //   'field' => 'organiser_id',
-    //   'comparator' => '=',
-    //   'value' => '1'
-    // );
-
-    //example: search on organiser id
-    // $conditions[0] = array(
-    //   'field' => 'organiser',
-    //   'comparator' => 'LIKE',
-    //   'value' => 'gent'
-    // );
-
-    //example: search on tag name
-    // $conditions[0] = array(
-    //   'field' => 'tag',
-    //   'comparator' => '=',
-    //   'value' => 'gastvrijheid'
-    // );
-
-    //example: events ending in may 2017
-    // $conditions[0] = array(
-    //   'field' => 'end',
-    //   'comparator' => '>=',
-    //   'value' => '2017-05-01 00:00:00'
-    // );
-    // $conditions[1] = array(
-    //   'field' => 'end',
-    //   'comparator' => '<',
-    //   'value' => '2017-06-01 00:00:00'
-    // );
-
-    //example: events happening on march first
-    // $conditions[0] = array(
-    //   'field' => 'start',
-    //   'comparator' => '<=',
-    //   'value' => '2017-03-01 00:00:00'
-    // );
-    // $conditions[1] = array(
-    //   'field' => 'end',
-    //   'comparator' => '>=',
-    //   'value' => '2017-03-01 00:00:00'
-    // );
-
-    //example: search on location, with certain end date + time
-    // $conditions[0] = array(
-    //   'field' => 'location',
-    //   'comparator' => 'like',
-    //   'value' => 'voortuin'
-    // );
-    // $conditions[1] = array(
-    //   'field' => 'end',
-    //   'comparator' => '=',
-    //   'value' => '2017-05-01 19:00'
-    // );
-
-    // $events = $this->eventDAO->search($conditions);
-
   }
 
   public function schedule() {
@@ -112,12 +29,25 @@ class EventsController extends Controller {
 
     //Set the events of the first month
     $this->setEvents($this->eventDAO->selectEventsByMonth($this->eventDAO->selectMonths()[0]["month"]));
-    //$images = $this->getImages(6);
-    //$this->set('photos', $images);
 
     //Handle months submits
     $this->monthSubmit();
     $this->tagSubmit();
+  }
+
+  public function details() {
+    if (!isset($_GET["id"]) || empty($_GET["id"])) {
+      $this->redirect("index.php?page=schedule");
+      exit();
+    }
+
+    $event = $this->eventDAO->selectById($_GET["id"]);
+    if ($tags = $this->eventDAO->selectTagsByEventId($event["id"])) {
+      $event["tags"] = $tags;
+    }
+
+    $event["images"] = $this->getImages($event["images_id"]);
+    $this->set("event", $event);
   }
 
   private function setMonths() {

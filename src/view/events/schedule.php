@@ -27,11 +27,24 @@
   <article class="prog">
     <div class="prog-wrap">
       <header class="prog-header">
-        <h3 class="prog-title"><?php echo $event["title"] ?></h3>
+        <h3 class="prog-title">
+          <a href="?page=details&amp;id=<?php echo $event["id"] ?>">
+          <?php echo $event["title"] ?>
+          </a>
+        </h3>
       </header>
       <p class="prog-desc">
-        BLANCO  is de noemer waaronder de Gentse atelierorganisatie NUCLEO haar
-        platformfunctie uitbouwt. BLANCO biedt een venster op het werk van de bij NUCLEO...
+        <?php
+        $desc = explode(' ', $event["description"]);
+        $res = "";
+        for ($i = 0; $i < 30; $i++) {
+          if (isset($desc[$i]))
+          $res .= $desc[$i]. " ";
+        }
+        echo $res."...";
+        ?>
+        <br />
+        <a class="read-more" href="?page=details&amp;id=<?php echo $event["id"] ?>">Lees meer.</a>
       </p>
       <?php if (isset($event["tags"])) {
       foreach ($event["tags"] as $tag):

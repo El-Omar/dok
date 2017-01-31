@@ -15,6 +15,10 @@ $routes = array(
   'schedule' => array(
     'controller' => 'Events',
     'action' => 'schedule'
+  ),
+  'details' => array(
+    'controller' => 'Events',
+    'action' => 'details'
   )
 );
 

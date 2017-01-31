@@ -33,13 +33,16 @@
 
   <header class="page-header">
     <a href="?page=home">
-      <h1 class="page-title"><span class="hidden">DOK</span></h1>
+      <h1 class="page-title">
+        <span class="hidden">DOK</span>
+        <img src="./assets/img/site/logo.png" alt="logo" width="208" height="78">
+      </h1>
     </a>
     <nav class="header-nav">
       <ul class="nav-list">
-        <li class="nav-item"><a href="#">DOK2017</a></li>
+        <li class="nav-item dok-item"><a href="#">DOK2017</a></li>
         <li class="nav-item"><a href="?page=schedule&amp;month=5">Programma</a></li>
-        <li class="nav-item"><a href="#">Blogs</a></li>
+        <li class="nav-item blogs-item"><a href="#">Blogs</a></li>
         <li class="nav-item"><a href="#">Praktisch</a></li>
       </ul>
     </nav>
