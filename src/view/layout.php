@@ -38,7 +38,7 @@
     <nav class="header-nav">
       <ul class="nav-list">
         <li class="nav-item"><a href="#">DOK2017</a></li>
-        <li class="nav-item"><a href="?page=schedule">Programma</a></li>
+        <li class="nav-item"><a href="?page=schedule&amp;month=5">Programma</a></li>
         <li class="nav-item"><a href="#">Blogs</a></li>
         <li class="nav-item"><a href="#">Praktisch</a></li>
       </ul>
@@ -64,9 +64,9 @@
       </form>
     </article>
     <ul class="footer-list">
-      <li class="footer-list-item"><a href="#">Home</a></li>
+      <li class="footer-list-item"><a href="?page=home">Home</a></li>
       <li class="footer-list-item"><a href="#">DOK2017</a></li>
-      <li class="footer-list-item"><a href="#">Programma</a></li>
+      <li class="footer-list-item"><a href="?page=schedule&amp;month=5">Programma</a></li>
       <li class="footer-list-item"><a href="#">Blogs</a></li>
       <li class="footer-list-item"><a href="#">Praktisch</a></li>
     </ul>

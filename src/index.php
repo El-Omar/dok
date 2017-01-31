@@ -2,7 +2,7 @@
 ini_set('display_errors', true);
 error_reporting(E_ALL);
 session_start();
-setlocale(LC_ALL, 'nl_NL');
+setlocale(LC_ALL, 'be_NL');
 
 define('DS', DIRECTORY_SEPARATOR);
 define('WWW_ROOT', __DIR__ . DS);

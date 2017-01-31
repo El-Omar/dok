@@ -86,12 +86,13 @@
   </header>
 
   <?php foreach ($events as $event) {?>
+    <a href="?page=details&amp;id=<?php echo $event["id"] ?>">
   <article class="event">
     <header class="event-header">
       <h3 class="event-title"><?php echo $event["title"] ?></h3>
     </header>
     <div class="event-pic-wrap">
-      <img class="home-event-pic" src="assets/img/site/event-placeholder.jpg" alt="Event1" width="350" height="230" >
+      <img class="home-event-pic" style="background:url(<?php echo $event["images"][0] ?>);background-position:center;background-size:cover;" alt="Event1" width="350" height="230" >
       <div class="event-brushes">
         <strong class="event-date"><?php echo date('d M', strtotime($event["start"])); ?></strong>
         <?php if (isset($event["tags"])) { ?>
@@ -100,6 +101,7 @@
       </div>
     </div>
   </article>
+  </a>
   <?php } ?>
 
   <div class="button-wrap">

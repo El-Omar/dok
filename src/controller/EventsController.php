@@ -16,14 +16,10 @@ class EventsController extends Controller {
     $upcomingEvents = [];
 
     for ($i = 0; $i < 3; $i++) {
-      $event = $allEvents[$i];
-      if ($tags = $this->eventDAO->selectTagsByEventId($event["id"])) {
-        $event["tags"] = $tags;
-      }
-      $upcomingEvents[$event["id"]] = $event;
+      $upcomingEvents[$allEvents[$i]["id"]] = $allEvents[$i];
     }
 
-    $this->set('events', $upcomingEvents);
+    $this->setEvents($upcomingEvents);
 
     // $conditions = array();
 
@@ -110,9 +106,18 @@ class EventsController extends Controller {
   }
 
   public function schedule() {
+    //Get & set all the months & tags from the database
     $this->setMonths();
-    $this->setEvents();
+    $this->setTags();
+
+    //Set the events of the first month
+    $this->setEvents($this->eventDAO->selectEventsByMonth($this->eventDAO->selectMonths()[0]["month"]));
+    //$images = $this->getImages(6);
+    //$this->set('photos', $images);
+
+    //Handle months submits
     $this->monthSubmit();
+    $this->tagSubmit();
   }
 
   private function setMonths() {
@@ -165,14 +170,52 @@ class EventsController extends Controller {
     $this->set('months', $months);
   }
 
-  private function setEvents() {
-    $allEvents = $this->eventDAO->selectAll();
+  private function setTags() {
+    $tags = $this->eventDAO->selectTags();
+    $this->set('tags', $tags);
+  }
+
+  private function getImages($id) {
+    $dir = "./assets/img/events/$id/";
+    $res = [];
+
+    //If this directory exists
+    if (is_dir($dir)) {
+      $files = scandir($dir);
+
+      //Looping through the directory
+      for ($i = 0; $i < count($files); $i++) {
+
+        if ($files[$i] != "." && $files[$i] != "..") {
+          //Pathinfo function is an array with file information
+          $file = pathinfo($files[$i]);
+
+          //Checking the extension
+          $ext = "";
+          if (isset($file["extension"])) {
+            $ext = $file["extension"];
+          }
+
+          if ($ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "svg" || $ext == "gif" || $ext == "webp") {
+            //Inserting the files in the array
+            $res[] = $dir.$file["basename"];
+          }
+        }
+
+      }
+    }
+
+    return $res;
+  }
+
+  private function setEvents($parsedEvents) {
     $events = [];
 
-    foreach ($allEvents as $event) {
+    foreach ($parsedEvents as $event) {
       if ($tags = $this->eventDAO->selectTagsByEventId($event["id"])) {
         $event["tags"] = $tags;
       }
+      $event["images"] = $this->getImages($event["images_id"]);
       $events[$event["id"]] = $event;
     }
 
@@ -187,7 +230,30 @@ class EventsController extends Controller {
 
   private function monthSubmit() {
     if (isset($_GET["month"])) {
-      //echo "<script>alert(".$_GET["month"].")</script>";
+      if ($_GET["month"] < 1 || $_GET["month"] > 12 || empty($_GET["month"])) {
+        $this->redirect("index.php?page=schedule");
+      }
+      $events = $this->eventDAO->selectEventsByMonth($_GET["month"]);
+      $this->setEvents($events);
     }
   }
+
+  private function tagSubmit() {
+    if (isset($_GET["tags"])) {
+      $conditions = [];
+
+      foreach ($_GET["tags"] as $tag) {
+        $conditions[] = array(
+          'field' => 'tag',
+          'comparator' => '=',
+          'value' => $tag
+        );
+
+      }
+
+      $events = $this->eventDAO->search($conditions);
+      $this->setEvents($events);
+    }
+  }
+
 }

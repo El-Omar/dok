@@ -1,5 +1,5 @@
 {
-  let filterClosed = false;
+  let filterClosed = true;
 
   const init = () => {
     const $tags = document.querySelectorAll(`.filter-tag-checkbox`);
@@ -19,7 +19,6 @@
 
   const parse = data => {
     console.log(data);
-
   };
 
   const toggleFilter = () => {
@@ -29,10 +28,12 @@
     if (filterClosed) {
       $filterForm.classList.add(`hidden`);
       $filterForm.parentNode.classList.add(`closed`);
+      $filterForm.parentNode.classList.remove(`opened`);
     } else {
       $filterForm.classList.remove(`hidden`);
       $filterForm.parentNode.classList.remove(`closed`);
-      $filterForm.classList.add(`opened`);
+      // $filterForm.classList.add(`opened`);
+      $filterForm.parentNode.classList.add(`opened`);
     }
 
   };

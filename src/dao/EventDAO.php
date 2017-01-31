@@ -24,6 +24,14 @@ class EventDAO extends DAO {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function selectEventsByMonth($month) {
+    $sql = "SELECT * FROM `ma3_dok_events` WHERE MONTH(`start`) = :month";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':month', $month);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function selectTagsByEventId($id) {
     $sql = "SELECT
       ma3_dok_tags.*,
@@ -34,6 +42,13 @@ class EventDAO extends DAO {
     ";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':id', $id);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function selectTags() {
+    $sql = "SELECT * FROM `ma3_dok_tags`";
+    $stmt = $this->pdo->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
@@ -62,16 +77,16 @@ class EventDAO extends DAO {
       $comparator = DAO::getSanitizedComparator($condition['comparator']);
       $columnName = DAO::getSanitizedColumnName($condition['field']);
       //special columns?
+      if($columnName == 'tag_id' || $columnName == 'tag') {
+        //skip tags
+        continue;
+      }
       if($columnName == 'location_id') {
         $columnName = 'ma3_dok_locations.id';
       } else if($columnName == 'location') {
         $columnName = 'ma3_dok_locations.name';
       } else if($columnName == 'organiser') {
         $columnName = 'ma3_dok_organisers.name';
-      } else if($columnName == 'tag_id') {
-        $columnName = 'ma3_dok_tags.id';
-      } else if($columnName == 'tag') {
-        $columnName = 'ma3_dok_tags.tag';
       }
       //handle functions
       if(!empty($condition['function'])) {
@@ -89,6 +104,7 @@ class EventDAO extends DAO {
     if(!empty($conditionSqls)) {
       $sql .= 'AND ' . implode(' AND ', $conditionSqls);
     }
+
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute($conditionParams);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -99,7 +115,9 @@ class EventDAO extends DAO {
     $tagsByEventId = $this->_getTagsForEventIds($eventIds);
     $locationsByEventId = $this->_getLocationsForEventIds($eventIds);
     //handle the tags & locations in the foreach loop - we want to see all tags for a given event
+    $return = array();
     foreach($result as &$row) {
+      $skipRow = false;
       $row['tags'] = array();
       if(!empty($tagsByEventId[$row['id']])) {
         $row['tags'] = $tagsByEventId[$row['id']];
@@ -108,8 +126,26 @@ class EventDAO extends DAO {
       if(!empty($locationsByEventId[$row['id']])) {
         $row['locations'] = $locationsByEventId[$row['id']];
       }
+      //tag filtering - check conditions
+      foreach($conditions as &$condition) {
+        $columnName = DAO::getSanitizedColumnName($condition['field']);
+        if($columnName == 'tag') {
+          //create array with tag names
+          $tagNames = array();
+          foreach($row['tags'] as &$tag) {
+            $tagNames[] = $tag['tag'];
+          }
+          //tag needs to be present in array
+          if(!in_array($condition['value'], $tagNames)) {
+            $skipRow = true;
+          }
+        }
+      }
+      if(!$skipRow) {
+        $return[] = $row;
+      }
     }
-    return $result;
+    return $return;
   }
 
   private function _getEventIdsFromResult(&$result) {
