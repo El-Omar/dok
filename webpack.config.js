@@ -2,7 +2,7 @@ const path = require(`path`);
 const webpack = require(`webpack`);
 
 // change for production build on different server path
-const publicPath = ``;
+const publicPath = `http://student.howest.be/el.sami.sayed.kamel/20162017/ma3/dok/`;
 
 const config = {
   entry: [

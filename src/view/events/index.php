@@ -66,7 +66,7 @@
       </strong>
     </div>
     <img src="assets/img/site/bewoners.png" alt="Bewoners"
-      width="720" height="607" srcset="assets/img/site/default.gif 800w" />
+      width="720" height="607" srcset="assets/img/site/bewoners.png 1900w, assets/img/site/default.gif 800w" />
   </article>
 
   <article class="creative">
